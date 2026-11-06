@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+
+  body {
+    @apply bg-void text-gray-100 font-body;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { @apply bg-void; }
+  ::-webkit-scrollbar-thumb { @apply bg-orange/30 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-orange/50; }
+}
+
+@layer utilities {
+  .font-gothic  { font-family: 'Cinzel Decorative', serif; }
+  .font-body    { font-family: 'Rajdhani', 'Segoe UI', sans-serif; }
+}
+
+/* Animación personalizada para el panel del bot */
+@keyframes panel-open {
+  from { transform: scale(0.7) translateY(20px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}

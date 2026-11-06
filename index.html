@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎃 Halloween Costumes Manager</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- Partículas de fondo -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon">🎃</span>
+        <div class="logo-text">
+          <h1>Halloween Costumes</h1>
+          <span class="logo-sub">Manager</span>
+        </div>
+      </div>
+      <div class="header-stats">
+        <div class="stat-chip">
+          <span class="stat-icon">👻</span>
+          <span id="total-costumes">0</span>
+          <span>Disfraces</span>
+        </div>
+        <div class="stat-chip">
+          <span class="stat-icon">💰</span>
+          <span id="total-value">$0</span>
+          <span>Inventario</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <main class="main-layout">
+
+    <!-- Sección izquierda: Formulario -->
+    <section class="panel form-panel">
+      <div class="panel-header">
+        <h2><span>🦇</span> Registrar Disfraz</h2>
+      </div>
+
+      <form id="costume-form" autocomplete="off">
+        <div class="form-group">
+          <label for="costume-id">ID del Disfraz</label>
+          <div class="id-input-group">
+            <input type="text" id="costume-id" placeholder="Ej: DSF-001" maxlength="20" />
+            <button type="button" id="gen-id-btn" class="btn-secondary" title="Generar ID automático">⚡</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="costume-name">Nombre del Disfraz <span class="required">*</span></label>
+          <input type="text" id="costume-name" placeholder="Ej: Vampiro Élite, Bruja Clásica..." required />
+        </div>
+
+        <div class="form-group">
+          <label for="costume-type">Tipo / Categoría</label>
+          <select id="costume-type">
+            <option value="clasico">Clásico de Halloween</option>
+            <option value="casero">Casero / Artesanal</option>
+            <option value="complejo">Complejo / Elaborado</option>
+            <option value="lujo">Lujo / Premium</option>
+            <option value="infantil">Infantil</option>
+            <option value="pareja">Pareja / Grupal</option>
+          </select>
+        </div>
+
+        <div class="prices-section">
+          <h3 class="prices-title">💲 Configuración de Precios (COP)</h3>
+
+          <div class="form-group">
+            <label for="price-hour">Alquiler por Hora</label>
+            <div class="price-input-wrap">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="price-hour" placeholder="15.000" min="0" step="500" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="price-day">Alquiler por Día</label>
+            <div class="price-input-wrap">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="price-day" placeholder="50.000" min="0" step="1000" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="price-sale">Precio de Venta Total</label>
+            <div class="price-input-wrap">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="price-sale" placeholder="150.000" min="0" step="1000" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="costume-stock">Unidades en Stock</label>
+          <input type="number" id="costume-stock" placeholder="1" min="0" value="1" />
+        </div>
+
+        <div class="form-group">
+          <label for="costume-notes">Notas / Descripción</label>
+          <textarea id="costume-notes" placeholder="Estado, talla, detalles especiales..." rows="3"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" id="submit-btn">
+            <span>🕸️</span> Agregar Disfraz
+          </button>
+          <button type="button" class="btn-ghost" id="clear-btn">
+            Limpiar
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Sección derecha: Inventario -->
+    <section class="panel inventory-panel">
+      <div class="panel-header">
+        <h2><span>💀</span> Inventario de Disfraces</h2>
+        <div class="inventory-controls">
+          <input type="text" id="search-input" placeholder="🔍 Buscar disfraz..." class="search-input" />
+          <select id="filter-type" class="filter-select">
+            <option value="all">Todos</option>
+            <option value="clasico">Clásico</option>
+            <option value="casero">Casero</option>
+            <option value="complejo">Complejo</option>
+            <option value="lujo">Lujo</option>
+            <option value="infantil">Infantil</option>
+            <option value="pareja">Pareja</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tabla de inventario -->
+      <div class="table-wrapper">
+        <table id="inventory-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Tipo</th>
+              <th>Por Hora</th>
+              <th>Por Día</th>
+              <th>Venta</th>
+              <th>Stock</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="inventory-body">
+            <!-- Filas dinámicas -->
+          </tbody>
+        </table>
+        <div class="empty-state" id="empty-state">
+          <span>🎃</span>
+          <p>No hay disfraces registrados aún.</p>
+          <p class="empty-sub">¡Agrega tu primer disfraz usando el formulario!</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de Edición -->
+  <div class="modal-overlay" id="edit-modal" hidden>
+    <div class="modal">
+      <div class="modal-header">
+        <h3>✏️ Editar Disfraz</h3>
+        <button class="modal-close" id="close-modal">✕</button>
+      </div>
+      <form id="edit-form">
+        <input type="hidden" id="edit-original-id" />
+        <div class="form-group">
+          <label>ID del Disfraz</label>
+          <input type="text" id="edit-id" required />
+        </div>
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" id="edit-name" required />
+        </div>
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="edit-type">
+            <option value="clasico">Clásico de Halloween</option>
+            <option value="casero">Casero / Artesanal</option>
+            <option value="complejo">Complejo / Elaborado</option>
+            <option value="lujo">Lujo / Premium</option>
+            <option value="infantil">Infantil</option>
+            <option value="pareja">Pareja / Grupal</option>
+          </select>
+        </div>
+        <div class="prices-section">
+          <h3 class="prices-title">💲 Precios (COP)</h3>
+          <div class="form-group">
+            <label>Alquiler por Hora</label>
+            <div class="price-input-wrap">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="edit-hour" min="0" step="500" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Alquiler por Día</label>
+            <div class="price-input-wrap">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="edit-day" min="0" step="1000" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Precio de Venta</label>
+            <div class="price-input-wrap">
+              <span class="currency-symbol">$</span>
+              <input type="number" id="edit-sale" min="0" step="1000" />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Stock</label>
+          <input type="number" id="edit-stock" min="0" />
+        </div>
+        <div class="form-group">
+          <label>Notas</label>
+          <textarea id="edit-notes" rows="3"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">💾 Guardar Cambios</button>
+          <button type="button" class="btn-ghost" id="cancel-edit">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bot de Asistencia -->
+  <div class="bot-container" id="bot-container">
+    <!-- Botón flotante -->
+    <button class="bot-toggle" id="bot-toggle" title="Asistente de Halloween">
+      <span class="bot-icon">🧙</span>
+      <span class="bot-badge" id="bot-badge">1</span>
+    </button>
+
+    <!-- Panel del Bot -->
+    <div class="bot-panel" id="bot-panel">
+      <div class="bot-header">
+        <div class="bot-avatar">🧙‍♂️</div>
+        <div class="bot-info">
+          <h4>Maestro Oscuro</h4>
+          <span class="bot-status">● En línea</span>
+        </div>
+        <button class="bot-close" id="bot-close">✕</button>
+      </div>
+
+      <div class="bot-quick-actions">
+        <button class="quick-btn" data-action="guide">📖 Guía rápida</button>
+        <button class="quick-btn" data-action="prices">💰 Sugerir precios</button>
+        <button class="quick-btn" data-action="inventory">📦 Ver inventario</button>
+        <button class="quick-btn" data-action="tips">🎯 Tips de venta</button>
+      </div>
+
+      <div class="bot-messages" id="bot-messages">
+        <!-- Mensajes dinámicos -->
+      </div>
+
+      <div class="bot-input-area">
+        <input type="text" id="bot-input" placeholder="Escribe tu consulta..." />
+        <button id="bot-send" class="btn-send">
+          <span>➤</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
