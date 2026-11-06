@@ -23,6 +23,9 @@ build/
 *.sqlite
 *.sqlite3
 *.db
+*.db-shm
+*.db-wal
+data/
 
 # Operating System Files
 Thumbs.db
